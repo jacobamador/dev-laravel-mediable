@@ -26,7 +26,7 @@ class Media extends Model
     const TYPE_OTHER = 'other';
     const TYPE_ALL = 'all';
 
-    protected $guarded = ['id', 'disk', 'directory', 'filename', 'extension', 'size', 'mime_type', 'aggregate_type'];
+    protected $guarded = ['id', 'user_id', 'disk', 'directory', 'filename', 'extension', 'size', 'mime_type', 'aggregate_type'];
 
     /**
      * {@inheritdoc}

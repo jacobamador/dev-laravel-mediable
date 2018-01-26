@@ -73,6 +73,12 @@ class MediaUploader
     private $hash_filename = false;
 
     /**
+     * ID of the user uploading the file
+     * @var integer
+     */
+    private $user_id;
+
+    /**
      * Constructor.
      * @param \Illuminate\Filesystem\FilesystemManager            $filesystem
      * @param \Plank\Mediable\SourceAdapters\SourceAdapterFactory $factory
@@ -83,6 +89,12 @@ class MediaUploader
         $this->filesystem = $filesystem;
         $this->factory = $factory;
         $this->config = $config ?: config('mediable');
+    }
+
+    public function setUserId($user_id)
+    {
+        $this->user_id = $user_id;
+        return $this;
     }
 
     /**
@@ -439,6 +451,9 @@ class MediaUploader
         $this->verifyDestination($model);
 
         $this->filesystem->disk($model->disk)->put($model->getDiskPath(), $this->source->contents());
+
+        $model->user_id = $this->user_id;
+        
         $model->save();
 
         return $model;
