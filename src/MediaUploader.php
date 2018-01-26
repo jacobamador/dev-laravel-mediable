@@ -465,13 +465,13 @@ class MediaUploader
      * @param  string $path Path to file, relative to disk root
      * @return \Plank\Mediable\Media
      */
-    public function importPath($disk, $path)
+    public function importPath($disk, $path, $user_id)
     {
         $directory = File::cleanDirname($path);
         $filename = pathinfo($path, PATHINFO_FILENAME);
         $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-        return $this->import($disk, $directory, $filename, $extension);
+        return $this->import($disk, $directory, $filename, $extension, $user_id);
     }
 
     /**
@@ -483,7 +483,7 @@ class MediaUploader
      * @return \Plank\Mediable\Media
      * @throws \Plank\Mediable\Exceptions\MediaUploadFileNotFoundException If the file does not exist
      */
-    public function import($disk, $directory, $filename, $extension)
+    public function import($disk, $directory, $filename, $extension, $user_id)
     {
         $disk = $this->verifyDisk($disk);
         $storage = $this->filesystem->disk($disk);
@@ -501,6 +501,8 @@ class MediaUploader
         $model->mime_type = $this->verifyMimeType($storage->mimeType($model->getDiskPath()));
         $model->aggregate_type = $this->inferAggregateType($model->mime_type, $model->extension);
         $model->size = $this->verifyFileSize($storage->size($model->getDiskPath()));
+
+        $model->user_id = $user_id;
 
         $model->save();
 
